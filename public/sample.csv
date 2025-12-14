@@ -1,0 +1,26 @@
+date,product,category,sales,units,region,rating
+2024-01-15,Widget A,Electronics,1250.50,25,North,4.5
+2024-01-16,Gadget B,Electronics,890.75,18,South,4.2
+2024-01-17,Tool C,Hardware,567.30,12,East,4.8
+2024-01-18,Widget A,Electronics,1450.00,29,West,4.6
+2024-01-19,Device D,Electronics,2100.25,42,North,4.9
+2024-01-20,Tool C,Hardware,670.50,14,South,4.7
+2024-01-21,Gadget B,Electronics,920.00,19,East,4.3
+2024-01-22,Widget A,Electronics,1380.75,28,North,4.5
+2024-01-23,Item E,Home,450.20,9,West,4.1
+2024-01-24,Device D,Electronics,2250.00,45,South,5.0
+2024-01-25,Tool C,Hardware,720.30,15,East,4.8
+2024-01-26,Widget A,Electronics,1520.50,31,West,4.7
+2024-01-27,Gadget B,Electronics,980.25,20,North,4.4
+2024-01-28,Item E,Home,510.00,10,South,4.2
+2024-01-29,Device D,Electronics,2180.75,44,East,4.9
+2024-01-30,Tool C,Hardware,780.50,16,West,4.8
+2024-01-31,Widget A,Electronics,1620.00,33,North,4.6
+2024-02-01,Gadget B,Electronics,1050.75,21,South,4.5
+2024-02-02,Item E,Home,560.30,11,East,4.3
+2024-02-03,Device D,Electronics,2300.00,46,West,5.0
+2024-02-04,Tool C,Hardware,830.25,17,North,4.9
+2024-02-05,Widget A,Electronics,1720.50,35,South,4.7
+2024-02-06,Gadget B,Electronics,1120.00,22,East,4.6
+2024-02-07,Item E,Home,610.75,12,West,4.4
+2024-02-08,Device D,Electronics,2420.30,48,North,5.0

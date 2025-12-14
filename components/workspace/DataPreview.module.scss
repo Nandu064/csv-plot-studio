@@ -1,0 +1,82 @@
+.container {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  max-height: 600px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  thead {
+    position: sticky;
+    top: 0;
+    background: var(--bg-secondary);
+    z-index: 10;
+
+    th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    tr {
+      &:hover {
+        background: var(--card-hover-bg);
+      }
+
+      &:not(:last-child) td {
+        border-bottom: 1px solid var(--border-color);
+      }
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.rowNumber {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  width: 60px;
+  text-align: right;
+  background: var(--bg-secondary);
+  position: sticky;
+  left: 0;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.columnKind {
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.footer {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}

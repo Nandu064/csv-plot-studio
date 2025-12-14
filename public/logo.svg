@@ -1,0 +1,64 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.1" />
+    </linearGradient>
+    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="120" height="120" rx="16" fill="url(#bgGradient)"/>
+  
+  <!-- Border -->
+  <rect x="3" y="3" width="114" height="114" rx="13" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.3"/>
+  
+  <!-- CSV text (top) -->
+  <text x="60" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#171717" text-anchor="middle" letter-spacing="3">CSV</text>
+  
+  <!-- Chart visualization (middle) -->
+  <!-- Grid lines -->
+  <line x1="25" y1="52" x2="95" y2="52" stroke="#e5e5e5" stroke-width="1"/>
+  <line x1="25" y1="65" x2="95" y2="65" stroke="#e5e5e5" stroke-width="1"/>
+  <line x1="25" y1="78" x2="95" y2="78" stroke="#e5e5e5" stroke-width="1"/>
+  
+  <!-- Y-axis -->
+  <line x1="25" y1="48" x2="25" y2="85" stroke="#737373" stroke-width="2"/>
+  <!-- X-axis -->
+  <line x1="25" y1="85" x2="95" y2="85" stroke="#737373" stroke-width="2"/>
+  
+  <!-- Data visualization - gradient line -->
+  <path d="M 30 75 L 42 68 L 54 58 L 66 62 L 78 55 L 90 50" 
+        fill="none" 
+        stroke="url(#lineGradient)" 
+        stroke-width="2.5" 
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+  
+  <!-- Data points with gradient colors -->
+  <circle cx="30" cy="75" r="3.5" fill="#3b82f6"/>
+  <circle cx="42" cy="68" r="3.5" fill="#4f86f7"/>
+  <circle cx="54" cy="58" r="3.5" fill="#638bf8"/>
+  <circle cx="66" cy="62" r="3.5" fill="#778ff9"/>
+  <circle cx="78" cy="55" r="3.5" fill="#8b5cf6"/>
+  <circle cx="90" cy="50" r="3.5" fill="#9f70f7"/>
+  
+  <!-- Point glow effect -->
+  <circle cx="30" cy="75" r="3.5" fill="#3b82f6" opacity="0.3"/>
+  <circle cx="42" cy="68" r="3.5" fill="#4f86f7" opacity="0.3"/>
+  <circle cx="54" cy="58" r="3.5" fill="#638bf8" opacity="0.3"/>
+  <circle cx="66" cy="62" r="3.5" fill="#778ff9" opacity="0.3"/>
+  <circle cx="78" cy="55" r="3.5" fill="#8b5cf6" opacity="0.3"/>
+  <circle cx="90" cy="50" r="3.5" fill="#9f70f7" opacity="0.3"/>
+  
+  <!-- PLOT text (bottom) -->
+  <text x="60" y="102" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#171717" text-anchor="middle" letter-spacing="3">PLOT</text>
+  
+  <!-- Accent corner detail -->
+  <circle cx="95" cy="25" r="3" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="25" cy="25" r="2" fill="#8b5cf6" opacity="0.5"/>
+</svg>
