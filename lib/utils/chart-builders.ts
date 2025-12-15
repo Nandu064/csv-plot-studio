@@ -1,4 +1,4 @@
-import type { ParsedCSV, ColumnMetadata } from '../types/csv';
+import type { ParsedCSV } from '../types/csv';
 import type { ChartConfig } from '../types/chart';
 import type * as Plotly from 'plotly.js-dist-min';
 import { getChartColor, getTopCategories, isNumericColumn } from '../utils/chart-colors';
@@ -45,30 +45,48 @@ function buildScatter(dataset: ParsedCSV, config: ChartConfig, rows: string[][])
   
   const colorByIndex = config.colorByColumn ? dataset.headers.indexOf(config.colorByColumn) : -1;
   const colorByMeta = colorByIndex !== -1 ? dataset.columns[colorByIndex] : undefined;
+  const xMeta = dataset.columns[xIndex];
+  const hasCategoricalX = !isNumericColumn(xMeta);
   
-  // Numeric colorBy => use colorscale
+  // Numeric colorBy => use colorscale with proper positioning
   if (colorByIndex !== -1 && isNumericColumn(colorByMeta)) {
     const xData = rows.map(r => r[xIndex]);
     const yData = rows.map(r => r[yIndex]);
     const colorData = rows.map(r => Number(r[colorByIndex]));
     
+    const layoutWithColorbar = {
+      ...baseLayout(config, config.xColumn, config.yColumns[0], {
+        hasColorAxis: true,
+        hasCategoricalX,
+        showLegend: false, // No legend when using color axis
+      }),
+    };
+    
     return {
       data: [{
         type: 'scatter',
         mode: 'markers',
+        name: config.yColumns[0],
         x: xData,
         y: yData,
         marker: {
           color: colorData,
           colorscale: 'Viridis',
           showscale: true,
-          colorbar: { title: { text: config.colorByColumn } },
+          colorbar: {
+            title: { text: config.colorByColumn },
+            x: 1.12, // Position colorbar outside plot area
+            len: 0.75, // 75% height
+            thickness: 14, // Slightly thinner for better readability
+            tickfont: { size: 11 }, // Smaller font for colorbar ticks
+            ticks: 'outside', // Position ticks outside colorbar
+          },
           size: 8,
         },
         customdata: rows,
         hovertemplate: `<b>${config.xColumn}</b>: %{x}<br><b>${config.yColumns[0]}</b>: %{y}<br><b>${config.colorByColumn}</b>: %{marker.color}<extra></extra>`,
       }],
-      layout: baseLayout(config, config.xColumn, config.yColumns[0]),
+      layout: layoutWithColorbar,
     };
   }
   
@@ -106,7 +124,13 @@ function buildScatter(dataset: ParsedCSV, config: ChartConfig, rows: string[][])
       });
     }
     
-    return { data: traces, layout: baseLayout(config, config.xColumn, config.yColumns[0]) };
+    return { 
+      data: traces, 
+      layout: baseLayout(config, config.xColumn, config.yColumns[0], {
+        hasCategoricalX,
+        showLegend: true,
+      }) 
+    };
   }
   
   // Default single series
@@ -117,18 +141,24 @@ function buildScatter(dataset: ParsedCSV, config: ChartConfig, rows: string[][])
     data: [{
       type: 'scatter',
       mode: 'markers',
+      name: config.yColumns[0], // Add meaningful name
       x: xData,
       y: yData,
       marker: { color: getChartColor(0), size: 8 },
       customdata: rows,
       hovertemplate: `<b>${config.xColumn}</b>: %{x}<br><b>${config.yColumns[0]}</b>: %{y}<extra></extra>`,
     }],
-    layout: baseLayout(config, config.xColumn, config.yColumns[0]),
+    layout: baseLayout(config, config.xColumn, config.yColumns[0], {
+      hasCategoricalX,
+      showLegend: false, // Single series doesn't need legend
+    }),
   };
 }
 
 function buildLine(dataset: ParsedCSV, config: ChartConfig, rows: string[][]): ChartData {
   const xIndex = dataset.headers.indexOf(config.xColumn);
+  const xMeta = dataset.columns[xIndex];
+  const hasCategoricalX = !isNumericColumn(xMeta);
   const xData = rows.map(r => r[xIndex]);
   const traces: Partial<Plotly.PlotData>[] = [];
   
@@ -151,12 +181,17 @@ function buildLine(dataset: ParsedCSV, config: ChartConfig, rows: string[][]): C
   
   return {
     data: traces,
-    layout: baseLayout(config, config.xColumn, config.yColumns[0] || ''),
+    layout: baseLayout(config, config.xColumn, config.yColumns[0] || '', {
+      hasCategoricalX,
+      showLegend: config.yColumns.length > 1,
+    }),
   };
 }
 
 function buildBar(dataset: ParsedCSV, config: ChartConfig, rows: string[][]): ChartData {
   const xIndex = dataset.headers.indexOf(config.xColumn);
+  const xMeta = dataset.columns[xIndex];
+  const hasCategoricalX = !isNumericColumn(xMeta);
   const xData = rows.map(r => r[xIndex]);
   const traces: Partial<Plotly.PlotData>[] = [];
   
@@ -178,10 +213,12 @@ function buildBar(dataset: ParsedCSV, config: ChartConfig, rows: string[][]): Ch
   
   return {
     data: traces,
-    layout: baseLayout(config, config.xColumn, config.yColumns[0] || ''),
+    layout: baseLayout(config, config.xColumn, config.yColumns[0] || '', {
+      hasCategoricalX,
+      showLegend: config.yColumns.length > 1, // Show legend only for multiple series
+    }),
   };
 }
-
 function buildHistogram(dataset: ParsedCSV, config: ChartConfig, rows: string[][]): ChartData {
   const xIndex = dataset.headers.indexOf(config.xColumn);
   const xData = rows.map(r => r[xIndex]);
@@ -189,12 +226,15 @@ function buildHistogram(dataset: ParsedCSV, config: ChartConfig, rows: string[][
   return {
     data: [{
       type: 'histogram',
+      name: config.xColumn,
       x: xData,
       marker: { color: getChartColor(0, true) },
       customdata: rows,
       hovertemplate: `<b>${config.xColumn}</b>: %{x}<br><b>Count</b>: %{y}<extra></extra>`,
     }],
-    layout: baseLayout(config, config.xColumn, 'Count'),
+    layout: baseLayout(config, config.xColumn, 'Count', {
+      showLegend: false,
+    }),
   };
 }
 
@@ -218,7 +258,9 @@ function buildBox(dataset: ParsedCSV, config: ChartConfig, rows: string[][]): Ch
   
   return {
     data: traces,
-    layout: baseLayout(config, config.xColumn, config.yColumns[0] || ''),
+    layout: baseLayout(config, config.xColumn, config.yColumns[0] || '', {
+      showLegend: config.yColumns.length > 1,
+    }),
   };
 }
 
@@ -257,7 +299,9 @@ function buildViolin(dataset: ParsedCSV, config: ChartConfig, rows: string[][]):
     
     return {
       data: traces,
-      layout: baseLayout(config, config.xColumn || '', config.yColumns[0]),
+      layout: baseLayout(config, config.xColumn || '', config.yColumns[0], {
+        showLegend: true,
+      }),
     };
   }
   
@@ -277,7 +321,9 @@ function buildViolin(dataset: ParsedCSV, config: ChartConfig, rows: string[][]):
       customdata: rows,
       hovertemplate: `<b>${config.yColumns[0]}</b>: %{y}<extra></extra>`,
     } as Partial<Plotly.PlotData>],
-    layout: baseLayout(config, config.xColumn || '', config.yColumns[0]),
+    layout: baseLayout(config, config.xColumn || '', config.yColumns[0], {
+      showLegend: false,
+    }),
   };
 }
 
@@ -298,6 +344,7 @@ function buildScatter3D(dataset: ParsedCSV, config: ChartConfig, rows: string[][
     data: [{
       type: 'scatter3d',
       mode: 'markers',
+      name: `${config.yColumns[0]} vs ${config.xColumn}`,
       x: xData,
       y: yData,
       z: zData,
@@ -305,7 +352,9 @@ function buildScatter3D(dataset: ParsedCSV, config: ChartConfig, rows: string[][
       customdata: rows,
       hovertemplate: `<b>${config.xColumn}</b>: %{x}<br><b>${config.yColumns[0]}</b>: %{y}<br><b>${config.zColumn}</b>: %{z}<extra></extra>`,
     }],
-    layout: baseLayout(config, config.xColumn, config.yColumns[0]),
+    layout: baseLayout(config, config.xColumn, config.yColumns[0], {
+      showLegend: false,
+    }),
   };
 }
 
@@ -322,37 +371,71 @@ function buildSurface(dataset: ParsedCSV, config: ChartConfig, rows: string[][])
   return {
     data: [{
       type: 'surface',
+      name: config.zColumn || 'Surface',
       z: zData,
       colorscale: 'Viridis',
     }],
-    layout: baseLayout(config, config.xColumn, config.yColumns[0] || ''),
+    layout: baseLayout(config, config.xColumn, config.yColumns[0] || '', {
+      showLegend: false,
+    }),
   };
 }
 
-function baseLayout(config: ChartConfig, xTitle: string, yTitle: string): Partial<Plotly.Layout> {
+function baseLayout(
+  config: ChartConfig, 
+  xTitle: string, 
+  yTitle: string,
+  options?: {
+    hasColorAxis?: boolean;
+    hasCategoricalX?: boolean;
+    showLegend?: boolean;
+  }
+): Partial<Plotly.Layout> {
+  const { hasColorAxis = false, showLegend = true } = options || {};
+  
+  // When color axis is used, legend is redundant
+  const shouldShowLegend = showLegend && !hasColorAxis;
+  
+  // Calculate margins based on layout needs
+  const rightMargin = hasColorAxis ? 180 : (shouldShowLegend ? 40 : 40); // Increased for colorbar readability
+  const bottomMargin = 60; // Fixed since tick labels are hidden
+  
   return {
     title: config.title ? { text: config.title, font: { size: 18, color: '#171717' } } : undefined,
     paper_bgcolor: '#ffffff',
     plot_bgcolor: '#fafafa',
     font: { color: '#171717', family: 'Inter, system-ui, sans-serif' },
     xaxis: {
-      title: { text: xTitle },
+      title: { text: '' }, // Remove axis title
+      showticklabels: false, // Hide X-axis tick labels (product names, etc.)
+      ticks: '', // Remove tick marks
       gridcolor: '#e5e5e5',
       zerolinecolor: '#d4d4d4',
       linecolor: '#e5e5e5',
+      automargin: true,
     },
     yaxis: {
-      title: { text: yTitle },
+      title: { text: '' }, // Remove axis title - hover tooltips provide context
       gridcolor: '#e5e5e5',
       zerolinecolor: '#d4d4d4',
       linecolor: '#e5e5e5',
+      automargin: true, // Auto-adjust margin for labels
     },
-    margin: { l: 60, r: 40, t: 60, b: 60 },
-    showlegend: true,
-    legend: {
+    margin: { 
+      l: 60, 
+      r: rightMargin, 
+      t: 60, 
+      b: bottomMargin 
+    },
+    showlegend: shouldShowLegend,
+    legend: shouldShowLegend ? {
       bgcolor: '#ffffff',
-      bordercolor: '#e5e5e5',
       borderwidth: 1,
-    },
+      x: 1.02,           // Position legend to the right of the chart
+      y: 1,              // Align to top
+      xanchor: 'left',   // Anchor to left side of legend box
+      yanchor: 'top',    // Anchor to top of legend box
+      orientation: 'v',  // Vertical orientation
+    } : undefined,
   };
 }

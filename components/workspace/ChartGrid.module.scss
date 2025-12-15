@@ -73,6 +73,12 @@
 .chartContainer {
   height: 400px;
   padding: 1rem;
+  position: relative;
+  
+  // Prevent accidental clicks on the container itself
+  > div {
+    pointer-events: auto;
+  }
 }
 
 .samplingNote {

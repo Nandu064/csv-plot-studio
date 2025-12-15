@@ -126,9 +126,9 @@ function ChartCard({
   // Use the new chart builders
   const { data, layout } = buildChartData(dataset, chart, dataRows);
 
-  const handlePointClick = (row: string[]) => {
+  const handlePointClick = useCallback((row: string[]) => {
     setSelectedPoint(row);
-  };
+  }, []);
 
   const highlightColumns = [
     chart.xColumn,
@@ -158,12 +158,14 @@ function ChartCard({
           data={data}
           layout={layout}
           onPointClick={handlePointClick}
+          pointCount={dataRows.length}
           config={{
             responsive: true,
             displayModeBar: true,
             displaylogo: false,
+            modeBarButtonsToRemove: ["lasso2d", "select2d"], // Remove selection tools
           }}
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100%", height: "100%", cursor: "pointer" }}
         />
       </div>
       {shouldSample && (
