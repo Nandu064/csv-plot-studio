@@ -11,7 +11,6 @@ import { DataTable } from "@/components/workspace/DataTable";
 import type { ChartConfig } from "@/lib/types";
 import styles from "./page.module.scss";
 
-// Empty array constant to avoid creating new references
 const EMPTY_CHARTS: never[] = [];
 
 export default function WorkspacePage() {
@@ -19,7 +18,6 @@ export default function WorkspacePage() {
   const dataset = useDatasetStore((state) => state.dataset);
   const datasetSignature = dataset?.signature || "";
 
-  // Use a stable selector that returns the exact array reference from the store
   const chartsRecord = useChartsStore((state) => state.charts);
   const charts = chartsRecord[datasetSignature] || EMPTY_CHARTS;
 
@@ -53,41 +51,37 @@ export default function WorkspacePage() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <button
-            className={styles.backButton}
-            onClick={() => router.push("/")}
-          >
-            ← Back to Home
+      <div className={styles.pageHeader}>
+        <button
+          className={styles.backButton}
+          onClick={() => router.push("/")}
+        >
+          &larr; Back
+        </button>
+        <h1>Workspace</h1>
+      </div>
+
+      <DatasetSummary dataset={dataset} />
+
+      <section className={styles.chartsSection}>
+        <div className={styles.chartsSectionHeader}>
+          <h2>Charts ({charts.length})</h2>
+          <button className={styles.addButton} onClick={handleAddChart}>
+            + Add Chart
           </button>
-          <h1>Workspace</h1>
         </div>
-      </header>
 
-      <main className={styles.main}>
-        <DatasetSummary dataset={dataset} />
+        <ChartGrid
+          dataset={dataset}
+          charts={charts}
+          onEditChart={handleEditChart}
+        />
+      </section>
 
-        <section className={styles.chartsSection}>
-          <div className={styles.chartsSectionHeader}>
-            <h2>Charts</h2>
-            <button className={styles.addButton} onClick={handleAddChart}>
-              + Add Chart
-            </button>
-          </div>
-
-          <ChartGrid
-            dataset={dataset}
-            charts={charts}
-            onEditChart={handleEditChart}
-          />
-        </section>
-
-        <section className={styles.previewSection}>
-          <h2>Data Preview ({dataset.rowCount.toLocaleString()} rows)</h2>
-          <DataTable headers={dataset.headers} rows={dataset.rows} />
-        </section>
-      </main>
+      <section className={styles.previewSection}>
+        <h2>Data Preview ({dataset.rowCount.toLocaleString()} rows)</h2>
+        <DataTable headers={dataset.headers} rows={dataset.rows} />
+      </section>
 
       {isEditorOpen && (
         <ChartEditor

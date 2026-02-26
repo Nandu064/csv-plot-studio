@@ -3,92 +3,101 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: var(--spacing-xl);
   background: var(--bg-primary);
 }
 
 .content {
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
-  padding: 3rem;
-  background: var(--bg-elevated);
-  border: 2px solid var(--border-primary);
-  border-radius: var(--radius-md);
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-2xl);
   text-align: center;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl);
 
   h1 {
     font-size: var(--font-size-2xl);
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
     color: var(--error);
+    font-weight: 800;
   }
 }
 
 .message {
-  font-size: 1.125rem;
+  font-size: var(--font-size-base);
   color: var(--text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.7;
 }
 
 .actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .retryButton,
 .homeButton {
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  font-size: 1rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
 }
 
 .retryButton {
   background: var(--accent);
-  border: 2px solid var(--accent);
+  border: 1px solid var(--accent);
   color: var(--text-inverse);
+  box-shadow: 0 4px 12px rgba(129, 140, 248, 0.25);
 
   &:hover {
     background: var(--accent-hover);
     border-color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(129, 140, 248, 0.35);
   }
 }
 
 .homeButton {
   background: transparent;
-  border: 2px solid var(--border-primary);
-  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary);
 
   &:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent);
+    background: var(--bg-tertiary);
+    border-color: var(--border-hover);
   }
 }
 
 .details {
   text-align: left;
-  margin-top: 2rem;
-  padding: 1rem;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md);
   background: var(--bg-secondary);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-lg);
 
   summary {
     cursor: pointer;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
   }
 }
 
 .stack {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
   overflow-x: auto;
   white-space: pre-wrap;
   word-break: break-all;
+  font-family: var(--font-mono);
 }

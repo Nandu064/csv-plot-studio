@@ -1,56 +1,63 @@
 .container {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-card);
 }
 
 .header {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 
   h2 {
-    font-size: 1.25rem;
+    font-size: var(--font-size-xl);
     margin: 0;
     color: var(--text-primary);
+    font-weight: 700;
   }
 }
 
 .stats {
   display: flex;
-  gap: 2rem;
+  gap: var(--spacing-xl);
   flex-wrap: wrap;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 2px;
 }
 
 .label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
 .value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent-color);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
 }
 
 .modifications {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-glass);
 
   h3 {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
     text-transform: uppercase;
-    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-sm);
   }
 
   ul {
@@ -60,14 +67,21 @@
   }
 
   li {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     color: var(--text-secondary);
-    padding: 0.25rem 0;
+    padding: 2px 0;
+    padding-left: var(--spacing-md);
+    position: relative;
 
-    &:before {
-      content: '• ';
-      color: var(--accent-color);
-      margin-right: 0.5rem;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.6em;
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: var(--radius-full);
     }
   }
 }

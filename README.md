@@ -1,130 +1,145 @@
 # CSV Plot Studio
 
-A powerful CSV visualization tool built with Next.js and Plotly.js. Upload CSV files and create interactive, publication-ready charts directly in your browser.
+A high-performance, browser-based CSV visualization tool. Upload any CSV and create interactive charts instantly. All processing runs locally — your data never leaves your machine.
+
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?logo=typescript)
+![Plotly](https://img.shields.io/badge/Plotly.js-3.x-3f4f75?logo=plotly)
+![License](https://img.shields.io/badge/License-MIT-818cf8)
 
 ## Features
 
-- 📊 **Multiple Chart Types**: Scatter, Line, Bar, Histogram, Box, 3D Scatter, and Surface plots
-- 🚀 **Web Worker CSV Parsing**: Non-blocking parsing for large files (up to 50MB)
-- 💾 **Smart Persistence**: Charts are saved and restored when you re-upload the same dataset
-- 🎯 **Deterministic Sampling**: Handle datasets with millions of rows without performance issues
-- 🎨 **Dark Brutalist Theme**: Clean, modern UI with financial-grade aesthetics
-- 📱 **Fully Static**: Deployable to Netlify, Vercel, or any static host
-- 🔒 **Privacy-First**: All processing happens in your browser—no data sent to servers
+### Core
+
+- **8 Chart Types** — Scatter, Line, Bar, Histogram, Box, Violin, 3D Scatter, Surface
+- **WebGL Rendering** — Automatically switches to GPU-accelerated `scattergl` traces for datasets over 20K points, preventing UI freeze
+- **Web Worker Parsing** — CSV files up to 50MB parsed off the main thread with progress updates
+- **Virtual Table** — Data preview uses true virtual scrolling, rendering only visible rows for instant response even with 1M+ rows
+- **Smart Sampling** — Deterministic sampling for large datasets preserves data distribution while keeping charts responsive
+- **Chart Persistence** — Chart configs stored in localStorage keyed by column header signature; re-upload the same CSV structure and your charts restore automatically
+
+### UI & Pages
+
+- **Dashboard** — Aggregate stats (datasets, charts, rows processed), chart type breakdown, quick actions
+- **Workspace** — Full chart editor with multi-series support, color-by column, sampling controls, point-click detail modals
+- **Privacy Policy** — Full privacy page documenting local-only processing
+- **Terms of Service** — Usage terms and disclaimers
+- **Dark Theme** — Midnight Pro color scheme with indigo/violet accents and glow effects
+
+### Data Intelligence
+
+- **Auto Type Detection** — Numbers, dates (ISO 8601 & US formats), booleans (true/false/yes/no/1/0), text, mixed
+- **Column Metadata** — Min/max, unique count, NaN count, date format detection
+- **Filtering** — Numeric range, category selection, boolean toggle, date range filters
+- **Export** — Download any chart as high-res PNG (1200x800)
 
 ## Tech Stack
 
-- **Next.js 16** (App Router, Static Export)
-- **TypeScript** (Strict mode)
-- **Plotly.js** (Interactive charts)
-- **PapaParse** (CSV parsing)
-- **Zustand** (State management)
-- **SCSS Modules** (Styling)
-- **Vitest** (Testing)
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router, Static Export) |
+| Language | TypeScript (Strict) |
+| Charts | Plotly.js + react-plotly.js |
+| CSV Parsing | PapaParse (Web Worker) |
+| State | Zustand (persisted) |
+| Styling | SCSS Modules |
+| Testing | Vitest + Testing Library |
+| Icons | Lucide React |
+| Alerts | SweetAlert2 |
 
-## Getting Started
-
-### Install Dependencies
+## Quick Start
 
 ```bash
+# Install dependencies
 npm install
-```
 
-### Run Development Server
-
-```bash
+# Start dev server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+Open [http://localhost:3000](http://localhost:3000).
 
-### Build for Production
-
-```bash
-npm run build
-```
-
-This creates a static export in the `out/` directory.
-
-### Run Tests
+## Scripts
 
 ```bash
-npm test
+npm run dev        # Development server (Turbopack)
+npm run build      # Static export → /out
+npm start          # Serve production build
+npm run lint       # ESLint check
+npm test           # Run Vitest suite
+npm run test:watch # Watch mode
 ```
 
 ## Project Structure
 
 ```
 csv-plot-studio/
-├── app/                  # Next.js App Router pages
-├── components/           # React components
-│   ├── plot/            # Plotly chart wrapper
-│   ├── upload/          # File upload UI
-│   └── workspace/       # Chart editing & preview
+├── app/
+│   ├── page.tsx              # Home — upload & recents
+│   ├── layout.tsx            # Root layout with Navbar + Footer
+│   ├── error.tsx             # Error boundary
+│   ├── workspace/page.tsx    # Chart editor & data preview
+│   ├── dashboard/page.tsx    # Stats & overview
+│   ├── privacy/page.tsx      # Privacy policy
+│   └── terms/page.tsx        # Terms of service
+├── components/
+│   ├── layout/               # Navbar, Footer (shared)
+│   ├── plot/                 # PlotlyChart, ChartLoader
+│   ├── upload/               # UploadDropzone
+│   ├── workspace/            # ChartGrid, ChartEditor, DataTable,
+│   │                         # DatasetSummary, FilterPanel, PointDetailsModal
+│   └── ui/                   # Portal
 ├── lib/
-│   ├── constants/       # Configuration & limits
-│   ├── stores/          # Zustand state stores
-│   ├── types/           # TypeScript types
-│   └── utils/           # CSV processing utilities
-├── workers/             # Web Workers for CSV parsing
-├── public/              # Static assets
-└── __tests__/           # Test files
+│   ├── constants/limits.ts   # File size, row, sampling thresholds
+│   ├── stores/               # Zustand: dataset, charts, filters, recents
+│   ├── types/                # TypeScript interfaces
+│   ├── ui/alerts.ts          # Toast & confirm dialogs
+│   └── utils/                # CSV building, type inference, chart builders,
+│                             # sampling, filters, chart colors
+├── workers/
+│   └── csv-parser.worker.ts  # Background CSV parsing
+├── __tests__/                # Vitest test suite
+├── public/                   # Static assets (logo, icon, sample.csv)
+└── types/                    # Plotly type declarations
 ```
 
-## Deployment to Netlify
+## Performance Architecture
 
-1. **Push to GitHub**
+The app is built to handle large datasets without freezing the UI:
 
-```bash
-git add .
-git commit -m "Initial commit"
-git push origin main
-```
-
-2. **Connect to Netlify**
-
-   - Go to [Netlify](https://netlify.com)
-   - Click "Add new site" → "Import an existing project"
-   - Choose your GitHub repository
-   - Build settings:
-     - **Build command**: `npm run build`
-     - **Publish directory**: `out`
-   - Click "Deploy site"
-
-3. **Custom Domain** (optional)
-   - Go to Site settings → Domain management
-   - Add your custom domain
+1. **Parsing** — A Web Worker reads and parses the CSV file off the main thread. The UI shows real-time progress messages.
+2. **Type Inference** — Column types are inferred from a sample of 1,000 rows, not the full dataset.
+3. **Chart Building** — `buildChartData()` output is memoized with `useMemo`. Chart cards are wrapped in `React.memo()`.
+4. **WebGL** — For datasets exceeding 20K rows, scatter plots automatically use `scattergl` for GPU-accelerated rendering.
+5. **Sampling** — Datasets over 30K rows use deterministic sampling (every nth row) to maintain distribution.
+6. **Virtual Scrolling** — The data table renders only the rows visible in the viewport plus a small overscan buffer.
 
 ## CSV Requirements
 
-- **Format**: Valid CSV with headers
-- **Max file size**: 50MB
-- **Max rows**: 1,000,000
-- **Max columns**: 100
+| Constraint | Limit |
+|-----------|-------|
+| File size | 50 MB |
+| Rows | 1,000,000 |
+| Columns | 100 |
+| Format | Valid CSV with header row |
 
-## Features in Detail
+## Deployment
 
-### Automatic Type Detection
+The app builds to a fully static `/out` directory. Deploy anywhere:
 
-The app intelligently detects column types:
+```bash
+npm run build
+```
 
-- **Numbers**: Statistical summaries (min, max, NaN count)
-- **Dates**: ISO 8601 and US formats
-- **Booleans**: true/false, yes/no, 1/0
-- **Text**: String values
-- **Mixed**: Columns with multiple types
+**Vercel** — Push to GitHub, import in Vercel. Zero config.
 
-### Smart Sampling
+**Netlify** — Build command: `npm run build`, publish directory: `out`.
 
-For datasets over 50,000 rows, deterministic sampling keeps charts responsive while maintaining data distribution.
-
-### Chart Persistence
-
-Charts are stored in browser localStorage using a signature derived from column headers. When you re-upload the same dataset structure, your charts are restored automatically.
+**Any static host** — Upload the contents of `/out`.
 
 ## Browser Support
 
-- Chrome/Edge 90+
+- Chrome / Edge 90+
 - Firefox 88+
 - Safari 14+
 
@@ -132,10 +147,6 @@ Charts are stored in browser localStorage using a signature derived from column 
 
 MIT
 
-## Contributing
-
-Contributions welcome! Please open an issue or PR.
-
 ---
 
-Built with ❤️ using Next.js and Plotly.js
+Built with Next.js, Plotly.js, and PapaParse.

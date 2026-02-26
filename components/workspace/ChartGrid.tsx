@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { PlotlyChart } from "@/components/plot/PlotlyChart";
 import { useChartsStore } from "@/lib/stores/charts-store";
 import { sampleRows } from "@/lib/utils/sampling";
@@ -22,7 +22,6 @@ export function ChartGrid({ dataset, charts, onEditChart }: ChartGridProps) {
 
   const handleDelete = useCallback(
     (chartId: string) => {
-      // Wrap async operation to prevent React Suspense warnings
       Promise.resolve()
         .then(async () => {
           const confirmed = await confirmDanger(
@@ -44,7 +43,6 @@ export function ChartGrid({ dataset, charts, onEditChart }: ChartGridProps) {
   );
 
   const handleExport = useCallback((chartId: string) => {
-    // Wrap async operation to prevent React Suspense warnings
     Promise.resolve().then(async () => {
       try {
         const element = document.querySelector(
@@ -85,7 +83,7 @@ export function ChartGrid({ dataset, charts, onEditChart }: ChartGridProps) {
   return (
     <div className={styles.grid}>
       {charts.map((chart) => (
-        <ChartCard
+        <MemoizedChartCard
           key={chart.id}
           chart={chart}
           dataset={dataset}
@@ -106,6 +104,8 @@ interface ChartCardProps {
   onExport: () => void;
 }
 
+const WEBGL_THRESHOLD = 20_000;
+
 function ChartCard({
   chart,
   dataset,
@@ -115,27 +115,45 @@ function ChartCard({
 }: ChartCardProps) {
   const [selectedPoint, setSelectedPoint] = useState<string[] | null>(null);
 
-  // Sample data if needed
-  const shouldSample =
-    chart.samplingEnabled && dataset.rowCount > CHART_SAMPLING_THRESHOLD;
-  const maxPoints = chart.maxPoints || CHART_SAMPLING_THRESHOLD;
-  const dataRows = shouldSample
-    ? sampleRows(dataset.rows, maxPoints)
-    : dataset.rows;
+  // Memoize sampling to avoid recomputing on every render
+  const { dataRows, shouldSample, maxPoints } = useMemo(() => {
+    const _shouldSample =
+      chart.samplingEnabled && dataset.rowCount > CHART_SAMPLING_THRESHOLD;
+    const _maxPoints = chart.maxPoints || CHART_SAMPLING_THRESHOLD;
+    const _dataRows = _shouldSample
+      ? sampleRows(dataset.rows, _maxPoints)
+      : dataset.rows;
+    return { dataRows: _dataRows, shouldSample: _shouldSample, maxPoints: _maxPoints };
+  }, [chart.samplingEnabled, chart.maxPoints, dataset.rows, dataset.rowCount]);
 
-  // Use the new chart builders
-  const { data, layout } = buildChartData(dataset, chart, dataRows);
+  // Memoize chart data computation - this is the main perf bottleneck
+  const { data, layout } = useMemo(
+    () => buildChartData(dataset, chart, dataRows),
+    [dataset, chart, dataRows]
+  );
+
+  // Use WebGL traces for large datasets to prevent UI freeze
+  const optimizedData = useMemo(() => {
+    if (dataRows.length < WEBGL_THRESHOLD) return data;
+    return data.map((trace) => {
+      if (trace.type === "scatter") {
+        return { ...trace, type: "scattergl" as const };
+      }
+      return trace;
+    });
+  }, [data, dataRows.length]);
 
   const handlePointClick = useCallback((row: string[]) => {
     setSelectedPoint(row);
   }, []);
 
-  const highlightColumns = [
-    chart.xColumn,
-    ...chart.yColumns,
-    chart.zColumn,
-    chart.colorByColumn,
-  ].filter(Boolean) as string[];
+  const highlightColumns = useMemo(
+    () =>
+      [chart.xColumn, ...chart.yColumns, chart.zColumn, chart.colorByColumn].filter(
+        Boolean
+      ) as string[],
+    [chart.xColumn, chart.yColumns, chart.zColumn, chart.colorByColumn]
+  );
 
   return (
     <div className={styles.card} data-chart-id={chart.id}>
@@ -143,19 +161,19 @@ function ChartCard({
         <h3>{chart.title || "Untitled Chart"}</h3>
         <div className={styles.cardActions}>
           <button onClick={onExport} title="Export as PNG">
-            📥
+            Export
           </button>
           <button onClick={onEdit} title="Edit">
-            ✏️
+            Edit
           </button>
-          <button onClick={onDelete} title="Delete">
-            🗑️
+          <button onClick={onDelete} title="Delete" className={styles.deleteBtn}>
+            Delete
           </button>
         </div>
       </div>
       <div className={styles.chartContainer}>
         <PlotlyChart
-          data={data}
+          data={optimizedData}
           layout={layout}
           onPointClick={handlePointClick}
           pointCount={dataRows.length}
@@ -163,7 +181,7 @@ function ChartCard({
             responsive: true,
             displayModeBar: true,
             displaylogo: false,
-            modeBarButtonsToRemove: ["lasso2d", "select2d"], // Remove selection tools
+            modeBarButtonsToRemove: ["lasso2d", "select2d"],
           }}
           style={{ width: "100%", height: "100%", cursor: "pointer" }}
         />
@@ -186,3 +204,5 @@ function ChartCard({
     </div>
   );
 }
+
+const MemoizedChartCard = memo(ChartCard);

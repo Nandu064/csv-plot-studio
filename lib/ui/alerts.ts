@@ -1,6 +1,5 @@
 import Swal from 'sweetalert2';
 
-// Toast configuration for success messages
 export function toastSuccess(message: string): void {
   Swal.fire({
     toast: true,
@@ -10,13 +9,12 @@ export function toastSuccess(message: string): void {
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    background: '#ffffff',
-    color: '#171717',
-    iconColor: '#10b981',
+    background: '#151d2e',
+    color: '#f1f5f9',
+    iconColor: '#34d399',
   });
 }
 
-// Toast configuration for error messages
 export function toastError(message: string): void {
   Swal.fire({
     toast: true,
@@ -26,13 +24,12 @@ export function toastError(message: string): void {
     showConfirmButton: false,
     timer: 4000,
     timerProgressBar: true,
-    background: '#ffffff',
-    color: '#171717',
-    iconColor: '#ef4444',
+    background: '#151d2e',
+    color: '#f1f5f9',
+    iconColor: '#f87171',
   });
 }
 
-// Toast configuration for info messages
 export function toastInfo(message: string): void {
   Swal.fire({
     toast: true,
@@ -42,13 +39,12 @@ export function toastInfo(message: string): void {
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    background: '#ffffff',
-    color: '#171717',
-    iconColor: '#3b82f6',
+    background: '#151d2e',
+    color: '#f1f5f9',
+    iconColor: '#818cf8',
   });
 }
 
-// Confirmation dialog for dangerous actions
 export async function confirmDanger(title: string, text: string): Promise<boolean> {
   const result = await Swal.fire({
     title,
@@ -57,25 +53,24 @@ export async function confirmDanger(title: string, text: string): Promise<boolea
     showCancelButton: true,
     confirmButtonText: 'Yes, proceed',
     cancelButtonText: 'Cancel',
-    confirmButtonColor: '#ef4444',
-    cancelButtonColor: '#737373',
-    background: '#ffffff',
-    color: '#171717',
-    iconColor: '#f59e0b',
+    confirmButtonColor: '#f87171',
+    cancelButtonColor: '#475569',
+    background: '#151d2e',
+    color: '#f1f5f9',
+    iconColor: '#fbbf24',
   });
-  
+
   return result.isConfirmed;
 }
 
-// Modal for displaying content
 export async function showModal(title: string, html: string): Promise<void> {
   await Swal.fire({
     title,
     html,
     confirmButtonText: 'Close',
-    confirmButtonColor: '#3b82f6',
-    background: '#ffffff',
-    color: '#171717',
+    confirmButtonColor: '#818cf8',
+    background: '#151d2e',
+    color: '#f1f5f9',
     width: '600px',
   });
 }

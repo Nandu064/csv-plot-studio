@@ -382,8 +382,8 @@ function buildSurface(dataset: ParsedCSV, config: ChartConfig, rows: string[][])
 }
 
 function baseLayout(
-  config: ChartConfig, 
-  xTitle: string, 
+  config: ChartConfig,
+  xTitle: string,
   yTitle: string,
   options?: {
     hasColorAxis?: boolean;
@@ -392,50 +392,54 @@ function baseLayout(
   }
 ): Partial<Plotly.Layout> {
   const { hasColorAxis = false, showLegend = true } = options || {};
-  
-  // When color axis is used, legend is redundant
+
   const shouldShowLegend = showLegend && !hasColorAxis;
-  
-  // Calculate margins based on layout needs
-  const rightMargin = hasColorAxis ? 180 : (shouldShowLegend ? 40 : 40); // Increased for colorbar readability
-  const bottomMargin = 60; // Fixed since tick labels are hidden
-  
+  const rightMargin = hasColorAxis ? 180 : (shouldShowLegend ? 40 : 40);
+  const bottomMargin = 60;
+
   return {
-    title: config.title ? { text: config.title, font: { size: 18, color: '#171717' } } : undefined,
-    paper_bgcolor: '#ffffff',
-    plot_bgcolor: '#fafafa',
-    font: { color: '#171717', family: 'Inter, system-ui, sans-serif' },
+    title: config.title ? { text: config.title, font: { size: 16, color: '#f1f5f9' } } : undefined,
+    paper_bgcolor: '#151d2e',
+    plot_bgcolor: '#111827',
+    font: { color: '#94a3b8', family: 'Inter, system-ui, sans-serif', size: 12 },
     xaxis: {
-      title: { text: '' }, // Remove axis title
-      showticklabels: false, // Hide X-axis tick labels (product names, etc.)
-      ticks: '', // Remove tick marks
-      gridcolor: '#e5e5e5',
-      zerolinecolor: '#d4d4d4',
-      linecolor: '#e5e5e5',
+      title: { text: '' },
+      showticklabels: false,
+      ticks: '',
+      gridcolor: '#1e293b',
+      zerolinecolor: '#334155',
+      linecolor: '#1e293b',
       automargin: true,
     },
     yaxis: {
-      title: { text: '' }, // Remove axis title - hover tooltips provide context
-      gridcolor: '#e5e5e5',
-      zerolinecolor: '#d4d4d4',
-      linecolor: '#e5e5e5',
-      automargin: true, // Auto-adjust margin for labels
+      title: { text: '' },
+      gridcolor: '#1e293b',
+      zerolinecolor: '#334155',
+      linecolor: '#1e293b',
+      automargin: true,
     },
-    margin: { 
-      l: 60, 
-      r: rightMargin, 
-      t: 60, 
-      b: bottomMargin 
+    margin: {
+      l: 60,
+      r: rightMargin,
+      t: 60,
+      b: bottomMargin
     },
     showlegend: shouldShowLegend,
     legend: shouldShowLegend ? {
-      bgcolor: '#ffffff',
+      bgcolor: 'rgba(21, 29, 46, 0.9)',
+      bordercolor: '#1e293b',
       borderwidth: 1,
-      x: 1.02,           // Position legend to the right of the chart
-      y: 1,              // Align to top
-      xanchor: 'left',   // Anchor to left side of legend box
-      yanchor: 'top',    // Anchor to top of legend box
-      orientation: 'v',  // Vertical orientation
+      font: { color: '#94a3b8' },
+      x: 1.02,
+      y: 1,
+      xanchor: 'left',
+      yanchor: 'top',
+      orientation: 'v',
     } : undefined,
+    hoverlabel: {
+      bgcolor: '#1a2236',
+      bordercolor: '#334155',
+      font: { color: '#f1f5f9', family: 'Inter, system-ui, sans-serif', size: 13 },
+    },
   };
 }

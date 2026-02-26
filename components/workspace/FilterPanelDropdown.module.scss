@@ -1,10 +1,12 @@
 .container {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
 }
 
 .header {
@@ -18,15 +20,17 @@
   margin: 0;
   font-size: var(--font-size-xl);
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 .clearAllButton {
   padding: var(--spacing-sm) var(--spacing-md);
   background: transparent;
   color: var(--error);
-  border: 1px solid var(--error);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
 
@@ -44,7 +48,7 @@
 .filterGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .filterItem {
@@ -53,11 +57,11 @@
 
 .filterButton {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--bg-elevated);
+  padding: 0.625rem var(--spacing-md);
+  background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   font-size: var(--font-size-sm);
   cursor: pointer;
   text-align: left;
@@ -69,17 +73,17 @@
   &:hover {
     background: var(--bg-hover);
     border-color: var(--accent);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-glow);
   }
 
   &.active {
     border-color: var(--accent);
-    background: var(--bg-hover);
+    background: var(--accent-subtle);
   }
 }
 
 .filterLabel {
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -87,7 +91,8 @@
 
 .dropdownArrow {
   font-size: 0.75rem;
-  transition: transform 0.2s ease;
+  transition: transform var(--transition-base);
+  color: var(--text-tertiary);
 
   .active & {
     transform: rotate(180deg);
@@ -102,7 +107,7 @@
   margin-top: 4px;
   background: var(--bg-elevated);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: var(--spacing-md);
   z-index: 1000;
@@ -129,42 +134,44 @@
 }
 
 .numberInput {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--bg-tertiary);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
 
   &:focus {
     outline: none;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px var(--accent-subtle);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-focus);
   }
 }
 
 .categoryOptions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.375rem;
   max-height: 200px;
   overflow-y: auto;
 }
 
 .searchInput {
   width: 100%;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--bg-tertiary);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
   margin-bottom: var(--spacing-sm);
+  transition: all var(--transition-fast);
 
   &:focus {
     outline: none;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px var(--accent-subtle);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-focus);
   }
 }
 
@@ -172,18 +179,21 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-xs);
+  padding: 0.375rem 0.5rem;
   cursor: pointer;
   font-size: var(--font-size-sm);
-  transition: background var(--transition-fast);
-  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
 
   &:hover {
     background: var(--bg-hover);
+    color: var(--text-primary);
   }
 
   input[type="checkbox"] {
     cursor: pointer;
+    accent-color: var(--accent);
   }
 }
 
@@ -200,16 +210,17 @@
 }
 
 .dateInput {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--bg-tertiary);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
 
   &:focus {
     outline: none;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px var(--accent-subtle);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-focus);
   }
 }
